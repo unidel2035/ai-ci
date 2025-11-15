@@ -30,13 +30,19 @@ This project follows the pattern established by [konard/hh-job-application-autom
 git clone https://github.com/unidel2035/ai-ci.git
 cd ai-ci
 
-# Install dependencies
+# Install dependencies (includes stealth plugins for bot detection bypass)
 npm install
 
 # Install Playwright browsers (first time only)
 # Required only if using default Chromium (not needed for Yandex Browser)
 npx playwright install chromium
 ```
+
+**Dependencies include:**
+- `playwright` - Browser automation framework
+- `playwright-extra` - Plugin wrapper for Playwright
+- `puppeteer-extra-plugin-stealth` - Stealth plugin to bypass bot detection
+- `yargs` - Command-line argument parser
 
 ## Usage
 
@@ -105,13 +111,28 @@ npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser yandex --brows
 
 1. **Fetch Issue**: The script fetches the issue details from GitHub using the GitHub API
 2. **Launch Browser**: Opens a Chromium browser with persistent session (saves cookies/login state)
-3. **Navigate to Claude Code**: Goes to claude.ai/code
+3. **Navigate to Claude Code**: Goes to claude.ai/code with stealth mode enabled
 4. **Manual Login**: Waits for you to log in to Claude.ai (first time only, sessions are saved)
 5. **Paste Issue**: Automatically pastes the issue URL, title, and description into Claude Code
 6. **Submit Task**: Clicks the submit button to start Claude Code processing
 7. **Monitor Completion**: Polls every 10 seconds for completion indicators (like "Create PR" button)
 8. **Create PR**: Automatically clicks "Create PR" when Claude Code finishes
 9. **Done**: The Pull Request is created in your GitHub repository
+
+## Bot Detection Bypass
+
+This tool uses `playwright-extra` with the `puppeteer-extra-plugin-stealth` plugin to bypass bot detection mechanisms. The stealth plugin:
+
+- Hides automation indicators (like `navigator.webdriver`)
+- Mimics real user behavior and browser fingerprints
+- Passes common bot detection tests used by Cloudflare and similar services
+
+**Additional anti-detection measures:**
+- Custom browser arguments to disable automation features
+- Persistent browser context to maintain login sessions
+- Human-like interaction patterns
+
+This allows the automation to work with claude.ai's bot protection without triggering CAPTCHA or human verification challenges.
 
 ## Browser Support
 
