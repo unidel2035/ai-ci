@@ -33,11 +33,42 @@ const argv = yargs(hideBin(process.argv))
     description: 'Run browser in headless mode',
     default: false
   })
+  .option('browser', {
+    alias: 'b',
+    type: 'string',
+    description: 'Browser to use (chromium or yandex)',
+    choices: ['chromium', 'yandex'],
+    default: 'chromium'
+  })
+  .option('browser-path', {
+    alias: 'p',
+    type: 'string',
+    description: 'Path to browser executable (for Yandex Browser or custom Chromium)',
+    default: process.env.BROWSER_PATH
+  })
   .help()
   .argv;
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const CLAUDE_CODE_URL = 'https://claude.ai/code';
+
+/**
+ * Get default Yandex Browser path based on platform
+ */
+function getYandexBrowserPath() {
+  const platform = process.platform;
+
+  if (platform === 'win32') {
+    // Windows paths
+    return process.env.LOCALAPPDATA + '\\Yandex\\YandexBrowser\\Application\\browser.exe';
+  } else if (platform === 'darwin') {
+    // macOS path
+    return '/Applications/Yandex.app/Contents/MacOS/Yandex';
+  } else {
+    // Linux paths
+    return '/usr/bin/yandex-browser';
+  }
+}
 
 /**
  * Fetch GitHub issue details
@@ -131,11 +162,33 @@ async function automateIssueToClaudeCode() {
   // Launch browser with persistent context
   log('Launching browser...');
   const userDataDir = './playwright-user-data';
-  const context = await chromium.launchPersistentContext(userDataDir, {
+
+  // Determine browser executable path
+  let executablePath = argv.browserPath;
+
+  if (argv.browser === 'yandex') {
+    if (!executablePath) {
+      executablePath = getYandexBrowserPath();
+      log(`Using default Yandex Browser path: ${executablePath}`);
+    } else {
+      log(`Using custom Yandex Browser path: ${executablePath}`);
+    }
+  } else if (executablePath) {
+    log(`Using custom Chromium path: ${executablePath}`);
+  }
+
+  const launchOptions = {
     headless,
     viewport: { width: 1920, height: 1080 },
     args: ['--start-maximized']
-  });
+  };
+
+  if (executablePath) {
+    launchOptions.executablePath = executablePath;
+  }
+
+  log(`Browser: ${argv.browser}`);
+  const context = await chromium.launchPersistentContext(userDataDir, launchOptions);
 
   const page = context.pages()[0] || await context.newPage();
 
