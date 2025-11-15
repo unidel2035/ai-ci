@@ -80,8 +80,22 @@ function getYandexBrowserPath() {
     // macOS path
     return '/Applications/Yandex.app/Contents/MacOS/Yandex';
   } else {
-    // Linux paths
-    return '/usr/bin/yandex-browser';
+    // Linux paths - check both stable and beta versions
+    const paths = [
+      '/usr/bin/yandex-browser-stable',
+      '/usr/bin/yandex-browser-beta',
+      '/usr/bin/yandex-browser'
+    ];
+
+    // Return first existing path
+    for (const path of paths) {
+      if (existsSync(path)) {
+        return path;
+      }
+    }
+
+    // If none found, return the most common path
+    return paths[0];
   }
 }
 

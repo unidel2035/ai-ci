@@ -127,9 +127,12 @@ The script supports using Yandex Browser instead of Chromium. Yandex Browser is 
   - `C:\Program Files (x86)\Yandex\YandexBrowser\Application\browser.exe` (32-bit on 64-bit Windows)
   - `%LOCALAPPDATA%\Yandex\YandexBrowser\Application\browser.exe` (user install)
 - **macOS**: `/Applications/Yandex.app/Contents/MacOS/Yandex`
-- **Linux**: `/usr/bin/yandex-browser`
+- **Linux**:
+  - `/usr/bin/yandex-browser-stable` (stable version)
+  - `/usr/bin/yandex-browser-beta` (beta version)
+  - `/usr/bin/yandex-browser` (older versions)
 
-The script automatically checks all Windows paths and uses the first one found.
+The script automatically checks all paths and uses the first one found.
 
 If your Yandex Browser is installed in a different location, use the `--browser-path` option to specify the custom path.
 
