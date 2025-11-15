@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
-import { chromium } from 'playwright';
+import { chromium } from 'playwright-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+
+// Add stealth plugin to avoid bot detection
+chromium.use(StealthPlugin());
 
 const argv = yargs(hideBin(process.argv))
   .option('repo', {
@@ -180,7 +184,14 @@ async function automateIssueToClaudeCode() {
   const launchOptions = {
     headless,
     viewport: { width: 1920, height: 1080 },
-    args: ['--start-maximized']
+    args: [
+      '--start-maximized',
+      '--disable-blink-features=AutomationControlled',
+      '--disable-features=IsolateOrigins,site-per-process',
+      '--disable-site-isolation-trials',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor'
+    ]
   };
 
   if (executablePath) {
