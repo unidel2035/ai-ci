@@ -197,7 +197,12 @@ async function automateIssueToClaudeCode() {
   const launchOptions = {
     headless,
     viewport: { width: 1920, height: 1080 },
-    args: ['--start-maximized']
+    args: [
+      '--start-maximized',
+      '--disable-blink-features=AutomationControlled',
+      '--disable-features=IsolateOrigins,site-per-process',
+      '--disable-site-isolation-trials'
+    ]
   };
 
   if (executablePath) {
@@ -208,6 +213,17 @@ async function automateIssueToClaudeCode() {
   const context = await chromium.launchPersistentContext(userDataDir, launchOptions);
 
   const page = context.pages()[0] || await context.newPage();
+
+  // Hide automation flags to prevent Google blocking
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => false,
+    });
+    // Add Chrome runtime for more realistic behavior
+    window.chrome = {
+      runtime: {},
+    };
+  });
 
   // Setup signal handlers for clean shutdown
   const cleanup = async () => {
