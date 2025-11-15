@@ -60,8 +60,22 @@ function getYandexBrowserPath() {
   const platform = process.platform;
 
   if (platform === 'win32') {
-    // Windows paths
-    return process.env.LOCALAPPDATA + '\\Yandex\\YandexBrowser\\Application\\browser.exe';
+    // Windows paths - check both Program Files and AppData\Local
+    const paths = [
+      'C:\\Program Files\\Yandex\\YandexBrowser\\Application\\browser.exe',
+      'C:\\Program Files (x86)\\Yandex\\YandexBrowser\\Application\\browser.exe',
+      process.env.LOCALAPPDATA + '\\Yandex\\YandexBrowser\\Application\\browser.exe'
+    ];
+
+    // Return first existing path
+    for (const path of paths) {
+      if (existsSync(path)) {
+        return path;
+      }
+    }
+
+    // If none found, return the most common path
+    return paths[0];
   } else if (platform === 'darwin') {
     // macOS path
     return '/Applications/Yandex.app/Contents/MacOS/Yandex';
