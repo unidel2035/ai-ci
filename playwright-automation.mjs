@@ -38,7 +38,7 @@ const argv = yargs(hideBin(process.argv))
     type: 'string',
     description: 'Browser to use (chromium or yandex)',
     choices: ['chromium', 'yandex'],
-    default: 'chromium'
+    default: 'yandex'
   })
   .option('browser-path', {
     alias: 'p',

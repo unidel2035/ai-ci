@@ -33,23 +33,24 @@ cd ai-ci
 # Install dependencies
 npm install
 
-# Install Playwright browsers (first time only)
-# Required only if using default Chromium (not needed for Yandex Browser)
+# Install Playwright browsers (optional, only needed for Chromium)
+# By default the script uses Yandex Browser, so this step is optional
+# Only run this if you want to use Chromium instead:
 npx playwright install chromium
 ```
 
 ## Usage
 
-### Basic Usage with Playwright (Chromium)
+### Basic Usage with Playwright (Yandex Browser by default)
 
 ```bash
 npm run playwright -- --repo owner/repo --issue 123
 ```
 
-### Using Yandex Browser
+### Using Chromium instead of Yandex
 
 ```bash
-npm run playwright -- --repo owner/repo --issue 123 --browser yandex
+npm run playwright -- --repo owner/repo --issue 123 --browser chromium
 ```
 
 ### Using Yandex Browser with Custom Path
@@ -83,7 +84,7 @@ npm run playwright -- --repo owner/repo --issue 123
 - `--repo, -r` (required): GitHub repository in format `owner/repo`
 - `--issue, -i` (required): GitHub issue number
 - `--github-token, -t`: GitHub personal access token (or use `GITHUB_TOKEN` env var)
-- `--browser, -b`: Browser to use - `chromium` or `yandex` (default: chromium)
+- `--browser, -b`: Browser to use - `chromium` or `yandex` (default: yandex)
 - `--browser-path, -p`: Path to browser executable (or use `BROWSER_PATH` env var)
 - `--manual-login`: Wait for manual login to claude.ai (default: true)
 - `--headless`: Run browser in headless mode (default: false)
@@ -91,20 +92,20 @@ npm run playwright -- --repo owner/repo --issue 123
 ### Examples
 
 ```bash
-# Automate issue #5 from unidel2035/ai-ci repository using default Chromium
+# Automate issue #5 from unidel2035/ai-ci repository using default Yandex Browser
 npm run playwright -- --repo unidel2035/ai-ci --issue 5
 
-# Same issue using Yandex Browser
-npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser yandex
+# Same issue using Chromium instead
+npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser chromium
 
 # Using Yandex Browser with custom path
-npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser yandex --browser-path "C:\Custom\Path\browser.exe"
+npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser-path "C:\Custom\Path\browser.exe"
 ```
 
 ## How It Works
 
 1. **Fetch Issue**: The script fetches the issue details from GitHub using the GitHub API
-2. **Launch Browser**: Opens a Chromium browser with persistent session (saves cookies/login state)
+2. **Launch Browser**: Opens Yandex Browser (or Chromium if specified) with persistent session (saves cookies/login state)
 3. **Navigate to Claude Code**: Goes to claude.ai/code
 4. **Manual Login**: Waits for you to log in to Claude.ai (first time only, sessions are saved)
 5. **Paste Issue**: Automatically pastes the issue URL, title, and description into Claude Code
