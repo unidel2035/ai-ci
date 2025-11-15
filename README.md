@@ -66,12 +66,28 @@ npm run playwright -- --repo owner/repo --issue 123
 - `--manual-login`: Wait for manual login to claude.ai (default: true)
 - `--headless`: Run browser in headless mode (default: false)
 
-### Example
+### Examples
 
 ```bash
 # Automate issue #5 from unidel2035/ai-ci repository
 npm run playwright -- --repo unidel2035/ai-ci --issue 5
+
+# Automate issue from dronedoc2025 repository (quick way)
+./run-dronedoc.sh 1
+
+# Automate issue from dronedoc2025 repository (full command)
+npm run playwright -- --repo unidel2035/dronedoc2025 --issue 1
 ```
+
+### DroneDoc 2025 Repository
+
+For the `unidel2035/dronedoc2025` repository, use the convenient wrapper script:
+
+```bash
+./run-dronedoc.sh <issue_number>
+```
+
+See [DRONEDOC.md](DRONEDOC.md) for detailed instructions in Russian.
 
 ## How It Works
 
