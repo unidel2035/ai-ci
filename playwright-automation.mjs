@@ -3,6 +3,7 @@
 import { chromium } from 'playwright';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { existsSync } from 'fs';
 
 const argv = yargs(hideBin(process.argv))
   .option('repo', {
@@ -173,8 +174,25 @@ async function automateIssueToClaudeCode() {
     } else {
       log(`Using custom Yandex Browser path: ${executablePath}`);
     }
+
+    // Check if Yandex Browser exists
+    if (!existsSync(executablePath)) {
+      console.error('\n❌ ERROR: Yandex Browser not found at:', executablePath);
+      console.error('\nPlease either:');
+      console.error('1. Install Yandex Browser from: https://browser.yandex.ru/');
+      console.error('2. Specify custom path: --browser-path "/path/to/yandex-browser"');
+      console.error('3. Use Chromium instead: --browser chromium\n');
+      process.exit(1);
+    }
   } else if (executablePath) {
     log(`Using custom Chromium path: ${executablePath}`);
+
+    // Check if custom Chromium exists
+    if (!existsSync(executablePath)) {
+      console.error('\n❌ ERROR: Browser not found at:', executablePath);
+      console.error('Please check the path and try again.\n');
+      process.exit(1);
+    }
   }
 
   const launchOptions = {
