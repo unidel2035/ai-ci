@@ -34,15 +34,35 @@ cd ai-ci
 npm install
 
 # Install Playwright browsers (first time only)
+# Required only if using default Chromium (not needed for Yandex Browser)
 npx playwright install chromium
 ```
 
 ## Usage
 
-### Basic Usage with Playwright
+### Basic Usage with Playwright (Chromium)
 
 ```bash
 npm run playwright -- --repo owner/repo --issue 123
+```
+
+### Using Yandex Browser
+
+```bash
+npm run playwright -- --repo owner/repo --issue 123 --browser yandex
+```
+
+### Using Yandex Browser with Custom Path
+
+```bash
+npm run playwright -- --repo owner/repo --issue 123 --browser yandex --browser-path "/path/to/yandex-browser"
+```
+
+Or set the `BROWSER_PATH` environment variable:
+
+```bash
+export BROWSER_PATH="/path/to/yandex-browser"
+npm run playwright -- --repo owner/repo --issue 123 --browser yandex
 ```
 
 ### With GitHub Token
@@ -63,14 +83,22 @@ npm run playwright -- --repo owner/repo --issue 123
 - `--repo, -r` (required): GitHub repository in format `owner/repo`
 - `--issue, -i` (required): GitHub issue number
 - `--github-token, -t`: GitHub personal access token (or use `GITHUB_TOKEN` env var)
+- `--browser, -b`: Browser to use - `chromium` or `yandex` (default: chromium)
+- `--browser-path, -p`: Path to browser executable (or use `BROWSER_PATH` env var)
 - `--manual-login`: Wait for manual login to claude.ai (default: true)
 - `--headless`: Run browser in headless mode (default: false)
 
-### Example
+### Examples
 
 ```bash
-# Automate issue #5 from unidel2035/ai-ci repository
+# Automate issue #5 from unidel2035/ai-ci repository using default Chromium
 npm run playwright -- --repo unidel2035/ai-ci --issue 5
+
+# Same issue using Yandex Browser
+npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser yandex
+
+# Using Yandex Browser with custom path
+npm run playwright -- --repo unidel2035/ai-ci --issue 5 --browser yandex --browser-path "C:\Custom\Path\browser.exe"
 ```
 
 ## How It Works
@@ -84,6 +112,23 @@ npm run playwright -- --repo unidel2035/ai-ci --issue 5
 7. **Monitor Completion**: Polls every 10 seconds for completion indicators (like "Create PR" button)
 8. **Create PR**: Automatically clicks "Create PR" when Claude Code finishes
 9. **Done**: The Pull Request is created in your GitHub repository
+
+## Browser Support
+
+### Yandex Browser
+
+The script supports using Yandex Browser instead of Chromium. Yandex Browser is based on Chromium and provides a familiar Russian-localized browsing experience.
+
+**Default Yandex Browser paths:**
+
+- **Windows**: `%LOCALAPPDATA%\Yandex\YandexBrowser\Application\browser.exe`
+- **macOS**: `/Applications/Yandex.app/Contents/MacOS/Yandex`
+- **Linux**: `/usr/bin/yandex-browser`
+
+If your Yandex Browser is installed in a different location, use the `--browser-path` option to specify the custom path.
+
+**Download Yandex Browser:**
+- Official website: https://browser.yandex.ru/
 
 ## Session Persistence
 
