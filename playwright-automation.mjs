@@ -166,8 +166,9 @@ async function automateIssueToClaudeCode() {
 
   // Determine browser executable path
   let executablePath = argv.browserPath;
+  let browserType = argv.browser;
 
-  if (argv.browser === 'yandex') {
+  if (browserType === 'yandex') {
     if (!executablePath) {
       executablePath = getYandexBrowserPath();
       log(`Using default Yandex Browser path: ${executablePath}`);
@@ -177,12 +178,10 @@ async function automateIssueToClaudeCode() {
 
     // Check if Yandex Browser exists
     if (!existsSync(executablePath)) {
-      console.error('\n❌ ERROR: Yandex Browser not found at:', executablePath);
-      console.error('\nPlease either:');
-      console.error('1. Install Yandex Browser from: https://browser.yandex.ru/');
-      console.error('2. Specify custom path: --browser-path "/path/to/yandex-browser"');
-      console.error('3. Use Chromium instead: --browser chromium\n');
-      process.exit(1);
+      log('⚠️  Yandex Browser not found at:', executablePath);
+      log('ℹ️  Falling back to Chromium (will be downloaded automatically by Playwright)');
+      browserType = 'chromium';
+      executablePath = null;
     }
   } else if (executablePath) {
     log(`Using custom Chromium path: ${executablePath}`);
@@ -205,7 +204,7 @@ async function automateIssueToClaudeCode() {
     launchOptions.executablePath = executablePath;
   }
 
-  log(`Browser: ${argv.browser}`);
+  log(`Browser: ${browserType}`);
   const context = await chromium.launchPersistentContext(userDataDir, launchOptions);
 
   const page = context.pages()[0] || await context.newPage();
